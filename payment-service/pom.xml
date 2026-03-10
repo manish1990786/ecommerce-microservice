@@ -8,11 +8,11 @@
 		<version>3.4.4</version>
 		<relativePath/>
 	</parent>
-	<groupId>com.group33.ecommerce</groupId>
+	<groupId>com.manish.ecommerce</groupId>
 	<artifactId>payment-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>payment-service</name>
-	<description>Payment microservice for E-commerce application developed by Group 33</description>
+	<description>Payment microservice</description>
 	<url/>
 	<licenses>
 		<license/>
