@@ -6,9 +6,7 @@ import java.time.LocalDateTime;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Positive;
 import lombok.Data;
-
 
 @Data
 @Entity
@@ -22,7 +20,6 @@ public class Payment {
     private String id;
 
     @NotNull(message = "Order ID cannot be null")
-    // @Positive(message = "Order ID must be a positive number")
     private String orderId;
 
     @NotNull(message = "Amount is required")
