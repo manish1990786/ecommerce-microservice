@@ -36,6 +36,5 @@ public class Payment {
     private LocalDateTime paymentDate;
 
     public Payment() {}
-
-    // (Add other setters and getters if not already present)
+    
 }
