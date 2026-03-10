@@ -2,9 +2,7 @@ const { consumer } = require("../config/kafka");
 
 const startUserEventConsumer = async () => {
   try {
-    // Subscribe to the topic
     await consumer.subscribe({ topic: "users", fromBeginning: true });
-
     console.log("Kafka Consumer for User Events started...");
 
     await consumer.run({

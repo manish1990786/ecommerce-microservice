@@ -7,7 +7,6 @@ const {
   EXCLUDED_STATUSES,
 } = require("../constants");
 
-// Create a new order
 const createOrder = async (userId, products, token) => {
   try {
     for (const product of products) {
@@ -35,7 +34,6 @@ const createOrder = async (userId, products, token) => {
     const order = new Order({ userId, products, totalAmount });
     const savedOrder = await order.save();
 
-    // Update the available quantity in the Product Service
     for (const product of products) {
       try {
         const response = await axios.patch(
@@ -70,7 +68,6 @@ const createOrder = async (userId, products, token) => {
   }
 };
 
-// Get all orders for a user
 const getUserOrders = async (userId) => {
   return await Order.find({ userId });
 };
