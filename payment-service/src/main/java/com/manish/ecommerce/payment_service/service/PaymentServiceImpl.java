@@ -24,7 +24,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public Optional<Payment> getPaymentById(String id) {
+    public Optional<Payment> getPaymentById(Long id) {
         return paymentRepository.findById(id);
     }
 
@@ -34,7 +34,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void deletePayment(String id) {
+    public void deletePayment(Long id) {
         paymentRepository.deleteById(id);
     }
 

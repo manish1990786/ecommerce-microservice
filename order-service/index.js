@@ -16,5 +16,13 @@ startUserEventConsumer();
 const orderRoutes = require("./routes/orderRoutes");
 app.use("/orders", orderRoutes);
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'UP', 
+    service: 'Order Service',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 const PORT = process.env.PORT || 3002;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

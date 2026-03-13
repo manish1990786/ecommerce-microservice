@@ -51,7 +51,7 @@ public class PaymentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Payment> getPayment(@PathVariable String id) {
+    public ResponseEntity<Payment> getPayment(@PathVariable Long id) {
         return paymentService.getPaymentById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -63,7 +63,7 @@ public class PaymentController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Payment> updatePayment(@PathVariable String id, @Valid @RequestBody Payment updatedPayment) {
+    public ResponseEntity<Payment> updatePayment(@PathVariable Long id, @Valid @RequestBody Payment updatedPayment) {
         Optional<Payment> existingPaymentOpt = paymentService.getPaymentById(id);
 
         if (existingPaymentOpt.isPresent()) {
@@ -82,7 +82,7 @@ public class PaymentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable String id) {
+    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         Optional<Payment> existingPayment = paymentService.getPaymentById(id);
 
         if (existingPayment.isPresent()) {

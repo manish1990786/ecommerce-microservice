@@ -20,7 +20,8 @@ import java.util.Scanner;
 public class JwtRequestFilter extends OncePerRequestFilter {
 
     private static final List<String> PUBLIC_PATHS = List.of(
-        "/health-check",
+        "/",
+        "/health",
         "/actuator",
         "/actuator/info",
         "/actuator/health"
@@ -43,7 +44,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             try {
-                URL url = new URL("http://host.docker.internal:3001/api/users/verify-token");
+                URL url = new URL("http://localhost:3001/api/users/verify-token");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Authorization", authHeader); // Full Bearer token

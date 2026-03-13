@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface PaymentService {
     Payment createPayment(Payment payment);
-    Optional<Payment> getPaymentById(String id);
+    Optional<Payment> getPaymentById(Long id);
     List<Payment> getPaymentsByOrderId(String orderId);
-    void deletePayment(String id);
+    void deletePayment(Long id);
     void updatePaymentStatusByRazorpayOrderId(String razorpayOrderId, String razorpayStatus);
 }

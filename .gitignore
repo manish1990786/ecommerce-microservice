@@ -7,4 +7,5 @@ coverage/
 jenkins_home/
 .kube/cache
 .env
+application.properties
 target/

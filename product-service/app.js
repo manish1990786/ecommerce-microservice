@@ -18,4 +18,12 @@ app.get('/', (req, res) => {
   res.send('Product Service is up and running');
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'UP', 
+    service: 'Product Service',
+    timestamp: new Date().toISOString(),
+  });
+});
+
 module.exports = app;

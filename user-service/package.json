@@ -1,13 +1,13 @@
 {
   "name": "user-service",
   "version": "1.0.0",
-  "description": "User Service for E-commerce App",
+  "description": "User Service",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-  "test": "jest --forceExit",
-  "test:watch": "jest --watch"
+    "test": "jest --forceExit",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
