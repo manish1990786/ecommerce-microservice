@@ -1,5 +1,7 @@
 package com.manish.ecommerce.payment_service.kafka;
 
+import com.manish.ecommerce.payment_service.model.Payment;
+import com.manish.ecommerce.payment_service.service.PaymentService;
 import com.manish.ecommerce.payment_service.service.RazorpayService;
 import com.razorpay.Order;
 import com.razorpay.RazorpayException;
@@ -16,6 +18,9 @@ public class PaymentRequestListener {
     private RazorpayService razorpayService;
 
     @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
     private KafkaTemplate<String, String> kafkaTemplate;
 
 @KafkaListener(topics = "orders", groupId = "payment-service-group")
@@ -27,7 +32,6 @@ public void handlePaymentRequest(String message) {
 
         String eventType = json.getString("eventType");
 
-        // Only process ORDER_CREATED events
         if (!"ORDER_CREATED".equals(eventType)) {
             System.out.println("Ignored event: " + eventType);
             return;
@@ -38,6 +42,13 @@ public void handlePaymentRequest(String message) {
         double amount = data.getDouble("totalAmount");
 
         Order order = razorpayService.createOrder(orderId, amount);
+
+        Payment payment = new Payment();
+        payment.setOrderId(orderId);
+        payment.setAmount(amount);
+        payment.setRazorpayOrderId(order.get("id").toString());
+        payment.setPaymentMethod("RAZORPAY");
+        paymentService.createPayment(payment);
 
         JSONObject successPayload = new JSONObject();
         successPayload.put("orderId", orderId);

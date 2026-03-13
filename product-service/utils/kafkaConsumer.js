@@ -8,7 +8,7 @@ const client = new kafka.KafkaClient({ kafkaHost });
 
 const consumer = new Consumer(
   client,
-  [{ topic: 'order-created', partition: 0 }],
+  [{ topic: 'orders', partition: 0 }],
   {
     autoCommit: true,
     groupId: 'product-service-group',

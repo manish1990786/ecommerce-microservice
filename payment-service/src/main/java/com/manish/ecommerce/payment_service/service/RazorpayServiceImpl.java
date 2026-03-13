@@ -16,16 +16,16 @@ public class RazorpayServiceImpl implements RazorpayService {
     @Value("${razorpay.key_secret}")
     private String keySecret;
 
-    @Value("${razorpay.webhook.secret}")
+    @Value("${razorpay.webhook_secret}")
     private String webhookSecret;
 
     @Override
     public Order createOrder(String orderId, Double amount) throws RazorpayException {
         RazorpayClient client = new RazorpayClient(keyId, keySecret);
         JSONObject orderRequest = new JSONObject();
-        orderRequest.put("amount", amount.intValue() * 100); // convert to paise
+        orderRequest.put("amount", amount.intValue() * 100);
         orderRequest.put("currency", "INR");
-        orderRequest.put("receipt", "order_rcptid_" + orderId);
+        orderRequest.put("receipt", "order_" + System.currentTimeMillis());
         orderRequest.put("payment_capture", 1);
 
         return client.orders.create(orderRequest);

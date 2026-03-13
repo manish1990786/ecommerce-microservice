@@ -24,7 +24,7 @@ import java.util.Optional;
 @RequestMapping("/api/payments")
 public class PaymentController {
 
-	@Value("${razorpay.webhook.secret}")
+	@Value("${razorpay.webhook_secret}")
 	private String webhookSecret;
 
     @Autowired
