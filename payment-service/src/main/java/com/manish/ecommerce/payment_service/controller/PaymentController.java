@@ -84,14 +84,29 @@ public class PaymentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
+    public ResponseEntity<Map<String, Object>> deletePayment(@PathVariable Long id) {
+
+        Map<String, Object> response = new HashMap<>();
+
         Optional<Payment> existingPayment = paymentService.getPaymentById(id);
 
         if (existingPayment.isPresent()) {
+
             paymentService.deletePayment(id);
-            return ResponseEntity.noContent().build();
+
+            response.put("status", "success");
+            response.put("message", "Payment deleted successfully");
+            response.put("paymentId", id);
+
+            return ResponseEntity.ok(response);
+
         } else {
-            return ResponseEntity.notFound().build();
+
+            response.put("status", "error");
+            response.put("message", "Payment not found");
+            response.put("paymentId", id);
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
 
