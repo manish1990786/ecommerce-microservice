@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -39,16 +41,35 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public void updatePaymentStatusByRazorpayOrderId(String razorpayOrderId, String razorpayStatus) {
+    public Map<String, Object> updatePaymentStatusByRazorpayOrderId(String razorpayOrderId, String razorpayStatus) {
+
+        Map<String, Object> response = new HashMap<>();
+
         Optional<Payment> paymentOpt = paymentRepository.findByRazorpayOrderId(razorpayOrderId);
+
         if (paymentOpt.isPresent()) {
+
             Payment payment = paymentOpt.get();
             PaymentStatus status = mapRazorpayStatus(razorpayStatus);
+
             payment.setPaymentStatus(status);
             paymentRepository.save(payment);
+
+            response.put("status", "success");
+            response.put("message", "Payment status updated");
+            response.put("orderId", razorpayOrderId);
+            response.put("paymentStatus", status);
+
         } else {
+
+            response.put("status", "error");
+            response.put("message", "Payment not found for Razorpay Order ID");
+            response.put("orderId", razorpayOrderId);
+
             System.out.println("No payment found for Razorpay Order ID: " + razorpayOrderId);
         }
+
+        return response;
     }
 
     private static PaymentStatus mapRazorpayStatus(String razorpayStatus) {

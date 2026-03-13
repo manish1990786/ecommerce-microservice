@@ -17,15 +17,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/payments")
 public class PaymentController {
 
-	@Value("${razorpay.webhook_secret}")
-	private String webhookSecret;
+    @Value("${razorpay.webhook_secret}")
+    private String webhookSecret;
 
     @Autowired
     private PaymentService paymentService;
@@ -45,7 +47,7 @@ public class PaymentController {
     }
 
     @PostMapping
-    public ResponseEntity<Payment> createPayment(@Valid@RequestBody Payment payment) {
+    public ResponseEntity<Payment> createPayment(@Valid @RequestBody Payment payment) {
         Payment savedPayment = paymentService.createPayment(payment);
         return ResponseEntity.ok(savedPayment);
     }
@@ -68,13 +70,13 @@ public class PaymentController {
 
         if (existingPaymentOpt.isPresent()) {
             Payment existingPayment = existingPaymentOpt.get();
-            
+
             existingPayment.setAmount(updatedPayment.getAmount());
             existingPayment.setPaymentMethod(updatedPayment.getPaymentMethod());
             existingPayment.setPaymentStatus(updatedPayment.getPaymentStatus());
             existingPayment.setOrderId(updatedPayment.getOrderId());
 
-            Payment saved = paymentService.createPayment(existingPayment);  // reuses save logic
+            Payment saved = paymentService.createPayment(existingPayment); // reuses save logic
             return ResponseEntity.ok(saved);
         } else {
             return ResponseEntity.notFound().build();
@@ -94,31 +96,39 @@ public class PaymentController {
     }
 
     @PostMapping("/webhook")
-    public ResponseEntity<String> handleWebhook(@RequestBody String payload,
-                                                @RequestHeader("X-Razorpay-Signature") String signature) {
+    public ResponseEntity<Map<String, Object>> handleWebhook(
+            @RequestBody String payload,
+            @RequestHeader("X-Razorpay-Signature") String signature) {
+
         try {
-            System.out.println("Webhook received:\n" + payload);
 
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode root = objectMapper.readTree(payload);
 
-            String razorpayOrderId = root.path("payload").path("payment").path("entity").path("order_id").asText();
-            String paymentStatus = root.path("payload").path("payment").path("entity").path("status").asText();
+            String razorpayOrderId = root.path("payload")
+                    .path("payment")
+                    .path("entity")
+                    .path("order_id")
+                    .asText();
 
-            System.out.println("Parsed order_id: " + razorpayOrderId);
-            System.out.println("Parsed payment status: " + paymentStatus);
+            String paymentStatus = root.path("payload")
+                    .path("payment")
+                    .path("entity")
+                    .path("status")
+                    .asText();
 
-            paymentService.updatePaymentStatusByRazorpayOrderId(razorpayOrderId, paymentStatus);
+            Map<String, Object> response = paymentService.updatePaymentStatusByRazorpayOrderId(razorpayOrderId,
+                    paymentStatus);
 
-            return ResponseEntity.ok("Webhook processed and payment updated");
+            return ResponseEntity.ok(response);
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error: " + e.getMessage());
-        }
-    }
 
-    @GetMapping("/secure-test")
-    public ResponseEntity<String> testSecureEndpoint() {
-        return ResponseEntity.ok("Secured endpoint accessed successfully with valid JWT!");
+            Map<String, Object> error = new HashMap<>();
+            error.put("status", "error");
+            error.put("message", e.getMessage());
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 }
